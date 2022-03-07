@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="index_style">
-        <p>Здравствуйте, ${requestScope.person}!</p>
+        <p>Здравствуйте, ${requestScope.user}!</p>
         <p>Выберите действие</p>
         <form action="<%=request.getContextPath()%>/messenger/message" method="get">
             <button tabindex="1" type="submit">Хочу отправить сообщение</button>

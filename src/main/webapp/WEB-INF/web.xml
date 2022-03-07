@@ -5,7 +5,7 @@
     <display-name>hw1-messenger</display-name>
     
     <context-param>
-        <param-name>fileForSavePersons</param-name>
+        <param-name>fileForSaveUsers</param-name>
         <param-value>D:\opt\apache tomcat\apache-tomcat-8.5.75\conf\chats\fileForSavePersons.txt</param-value>
     </context-param>
     <context-param>
@@ -14,7 +14,7 @@
     </context-param>
 
     <listener>
-        <listener-class>by.it.academy.hw1_messenger.messenger.controllers.web.listeners.ContextListener</listener-class>
+        <listener-class>by.it.academy.hw1_messenger.messenger.controller.web.listeners.ContextListener</listener-class>
     </listener>
 
 </web-app>
