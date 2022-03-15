@@ -1,12 +1,8 @@
 package by.it.academy.hw1_messenger.messenger.controller.web.servlets;
 
-import by.it.academy.hw1_messenger.messenger.controller.dao.UserDAO;
-import by.it.academy.hw1_messenger.messenger.controller.dao.api.IUserDAO;
 import by.it.academy.hw1_messenger.messenger.model.User;
-import by.it.academy.hw1_messenger.messenger.view.MessengerServiceDAO;
-import by.it.academy.hw1_messenger.messenger.view.api.IMessengerService;
-import by.it.academy.hw1_messenger.messenger.storage.api.IStorageService;
-import by.it.academy.hw1_messenger.messenger.storage.SessionStorage;
+import by.it.academy.hw1_messenger.messenger.view.UserService;
+import by.it.academy.hw1_messenger.messenger.view.api.IUserService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,17 +15,10 @@ import java.time.LocalDate;
 @WebServlet(name = "SignUpServlet", urlPatterns = "/messenger/signUp")
 public class SignUpServlet extends HttpServlet {
 
-    private final IMessengerService service;
-    private final IStorageService sessionStorage;
-    private final static String LOGIN_PARAMETER = "login";
-    private final static String PASSWORD_PARAMETER = "password";
-    private final static String FIRST_NAME_PARAMETER = "firstName";
-    private final static String LAST_NAME_PARAMETER = "lastName";
-    private final static String BIRTHDAY_PARAMETER = "birthday";
+    private final IUserService service;
 
     public SignUpServlet() {
-        this.service = new MessengerServiceDAO();
-        this.sessionStorage = new SessionStorage();
+        this.service = UserService.getInstance();
     }
 
     @Override
@@ -44,23 +33,26 @@ public class SignUpServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html; charset=UTF-8");
 
-        String login = req.getParameter(LOGIN_PARAMETER);
-        String password = req.getParameter(PASSWORD_PARAMETER);
-        String firstName = req.getParameter(FIRST_NAME_PARAMETER);
-        String lastName = req.getParameter(LAST_NAME_PARAMETER);
-        String birthday = req.getParameter(BIRTHDAY_PARAMETER);
+        String login = req.getParameter("login");
+        String password = req.getParameter("password");
+        String firstName = req.getParameter("firstName");
+        String lastName = req.getParameter("lastName");
+        String birthday = req.getParameter("birthday");
 
-        if (login.isEmpty() || password.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || birthday.isEmpty()) {
-            req.setAttribute("requiredParameter", "Все поля должны быть заполнены!");
-            req.getRequestDispatcher("/views/signUp-page.jsp").forward(req, resp);
-        } else if (!service.checkLoginIsFree(login)) {
-            req.setAttribute("requiredParameter", "Пользователь с логином " + login + " уже существует!");
-            req.getRequestDispatcher("/views/signUp-page.jsp").forward(req, resp);
-        } else {
-            User user = new User(login, password, firstName, lastName, LocalDate.parse(birthday));
-            service.addUser(user);
-            sessionStorage.addToStorage(user, req);
+        User user = new User();
+        user.setLogin(login);
+        user.setPassword(password);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setBirthday(LocalDate.parse(birthday));
+
+        try {
+            this.service.signUp(user);
+            req.getSession().setAttribute("user", user);
             resp.sendRedirect(req.getContextPath() + "/messenger/userPage");
+        } catch (IllegalArgumentException e) {
+            req.setAttribute("requiredParameter", e.getMessage());
+            req.getRequestDispatcher("/views/signUp-page.jsp").forward(req, resp);
         }
     }
 }

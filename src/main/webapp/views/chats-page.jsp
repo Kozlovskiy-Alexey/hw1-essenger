@@ -23,7 +23,7 @@
                     <tr>
                         <td><c:out value="${sms.dateTime}" /></td>
                         <td><c:out value="${sms.fromLogin}" /></td>
-                        <td><c:out value="${sms.message}" /></td>
+                        <td><c:out value="${sms.text}" /></td>
                     </tr>
                 </c:forEach>
             </table>

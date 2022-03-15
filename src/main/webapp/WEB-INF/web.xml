@@ -13,8 +13,4 @@
         <param-value>D:\opt\apache tomcat\apache-tomcat-8.5.75\conf\chats\fileForSaveMessages.txt</param-value>
     </context-param>
 
-    <listener>
-        <listener-class>by.it.academy.hw1_messenger.messenger.controller.web.listeners.ContextListener</listener-class>
-    </listener>
-
 </web-app>

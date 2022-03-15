@@ -7,12 +7,12 @@ public class Message implements Serializable {
 
     private LocalDateTime dateTime;
     private String fromLogin;
-    private String message;
+    private String text;
 
-    public Message(LocalDateTime dateTime, String fromLogin, String message) {
+    public Message(LocalDateTime dateTime, String fromLogin, String text) {
         this.dateTime = dateTime;
         this.fromLogin = fromLogin;
-        this.message = message;
+        this.text = text;
     }
 
     public LocalDateTime getDateTime() {
@@ -23,8 +23,8 @@ public class Message implements Serializable {
         return fromLogin;
     }
 
-    public String getMessage() {
-        return message;
+    public String getText() {
+        return text;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class Message implements Serializable {
         return "Message{" +
                 "dateTime=" + dateTime +
                 ", fromLogin='" + fromLogin + '\'' +
-                ", message='" + message + '\'' +
+                ", message='" + text + '\'' +
                 '}';
     }
 }

@@ -2,11 +2,10 @@ package by.it.academy.hw1_messenger.messenger.controller.web.servlets;
 
 import by.it.academy.hw1_messenger.messenger.model.Message;
 import by.it.academy.hw1_messenger.messenger.model.User;
-import by.it.academy.hw1_messenger.messenger.view.MessengerService;
-import by.it.academy.hw1_messenger.messenger.view.MessengerServiceDAO;
-import by.it.academy.hw1_messenger.messenger.view.api.IMessengerService;
-import by.it.academy.hw1_messenger.messenger.storage.api.IStorageService;
-import by.it.academy.hw1_messenger.messenger.storage.SessionStorage;
+import by.it.academy.hw1_messenger.messenger.storage.DBChatStorage;
+import by.it.academy.hw1_messenger.messenger.storage.api.IChatStorage;
+import by.it.academy.hw1_messenger.messenger.view.MessageService;
+import by.it.academy.hw1_messenger.messenger.view.api.IMessageService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,12 +18,10 @@ import java.util.List;
 @WebServlet(name = "ChatServlet", urlPatterns = "/messenger/chats")
 public class ChatServlet extends HttpServlet {
 
-    private final IMessengerService service;
-    private final IStorageService storageService;
+    private final IMessageService messageService;
 
     public ChatServlet() {
-        this.service = new MessengerServiceDAO();
-        this.storageService = new SessionStorage();
+        this.messageService = MessageService.getInstance();
     }
 
     @Override
@@ -32,9 +29,9 @@ public class ChatServlet extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         resp.setContentType("text/html; charset=UTF-8");
 
-        User user = storageService.getFromStorage(req);
+        User user = (User) req.getSession().getAttribute("user");
         String loginTo = user.getLogin();
-        List<Message> messageList = service.get(loginTo);
+        List<Message> messageList = messageService.get(user);
         if (messageList != null) {
             req.setAttribute("messages", messageList);
             req.getRequestDispatcher("/views/chats-page.jsp").forward(req, resp);

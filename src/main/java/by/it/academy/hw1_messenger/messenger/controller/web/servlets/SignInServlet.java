@@ -1,10 +1,8 @@
 package by.it.academy.hw1_messenger.messenger.controller.web.servlets;
 
 import by.it.academy.hw1_messenger.messenger.model.User;
-import by.it.academy.hw1_messenger.messenger.view.MessengerServiceDAO;
-import by.it.academy.hw1_messenger.messenger.view.api.IMessengerService;
-import by.it.academy.hw1_messenger.messenger.storage.api.IStorageService;
-import by.it.academy.hw1_messenger.messenger.storage.SessionStorage;
+import by.it.academy.hw1_messenger.messenger.view.AuthService;
+import by.it.academy.hw1_messenger.messenger.view.api.IAuthService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,12 +14,10 @@ import java.io.IOException;
 @WebServlet(name = "SignInServlet", urlPatterns = "/messenger/signIn")
 public class SignInServlet extends HttpServlet {
 
-    private final IMessengerService service;
-    private final IStorageService storageService;
+    private final IAuthService authService;
 
     public SignInServlet() {
-        this.service = new MessengerServiceDAO();
-        this.storageService = new SessionStorage();
+        this.authService = AuthService.getInstance();
     }
 
     @Override
@@ -39,19 +35,14 @@ public class SignInServlet extends HttpServlet {
         String login = req.getParameter("login");
         String password = req.getParameter("password");
 
-        if (login.isEmpty() || password.isEmpty()) {
-            req.setAttribute("wrongValidation", "Не введен логин или пароль!");
+        User user = authService.authentication(login, password);
+
+        if (user == null) {
+            req.setAttribute("wrongValidation", "Логин или пароль непавильный!");
             req.getRequestDispatcher("/views/signIn-page.jsp").forward(req, resp);
-        }
-
-        User user = service.signIn(login, password);
-
-        if (user != null) {
-            storageService.addToStorage(user, req);
-            resp.sendRedirect(req.getContextPath() + "/messenger/userPage");
         } else {
-            req.setAttribute("wrongValidation", "Неправильный логин или пароль!");
-            req.getRequestDispatcher("/views/signIn-page.jsp").forward(req, resp);
+            req.getSession().setAttribute("user", user);
+            resp.sendRedirect(req.getContextPath() + "/messenger/userPage");
         }
     }
 }
