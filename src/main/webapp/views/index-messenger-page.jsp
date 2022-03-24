@@ -18,6 +18,11 @@
                  <button tabindex="2" type="submit">Войти</button>
             </p>
         </form>
+        <form action="<%=request.getContextPath()%>/messenger/logs">
+            <p>
+                <button tabindex="3" type="submit">System logs</button>
+            </p>
+        </form>
     </div>
 </body>
 </html>

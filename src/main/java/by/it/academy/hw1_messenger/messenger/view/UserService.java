@@ -1,8 +1,10 @@
 package by.it.academy.hw1_messenger.messenger.view;
 
 import by.it.academy.hw1_messenger.messenger.model.User;
-import by.it.academy.hw1_messenger.messenger.storage.DBUserStorage;
+import by.it.academy.hw1_messenger.messenger.storage.api.ChoiceFactoryStorage;
+import by.it.academy.hw1_messenger.messenger.storage.sql.DBUserStorage;
 import by.it.academy.hw1_messenger.messenger.storage.api.IUserStorage;
+import by.it.academy.hw1_messenger.messenger.view.api.IAuditService;
 import by.it.academy.hw1_messenger.messenger.view.api.IMessageService;
 import by.it.academy.hw1_messenger.messenger.view.api.IUserService;
 
@@ -14,10 +16,12 @@ public class UserService implements IUserService {
     private static volatile UserService instance;
     private final IUserStorage userStorage;
     private final IMessageService messageService;
+    private final IAuditService auditService;
 
     private UserService() {
-        this.userStorage = DBUserStorage.getInstance();
+        this.userStorage = ChoiceFactoryStorage.getInstance().getIUserStorage();
         this.messageService = MessageService.getInstance();
+        this.auditService = AuditService.getInstance();
     }
 
     public static UserService getInstance() {
@@ -43,6 +47,7 @@ public class UserService implements IUserService {
         this.validationForSignUp(user);
         user.setRegistration(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
         userStorage.add(user);
+        auditService.regAudit(user);
     }
 
     private void validationForSignUp(User user) {
@@ -76,6 +81,7 @@ public class UserService implements IUserService {
     private boolean nullOrEmpty(String val) {
         return val == null || val.isEmpty();
     }
+
     @Override
     public Collection<User> getAll() {
         return this.userStorage.getAll();

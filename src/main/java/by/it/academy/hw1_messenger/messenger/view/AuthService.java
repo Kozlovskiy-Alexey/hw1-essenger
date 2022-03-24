@@ -1,6 +1,7 @@
 package by.it.academy.hw1_messenger.messenger.view;
 
 import by.it.academy.hw1_messenger.messenger.model.User;
+import by.it.academy.hw1_messenger.messenger.view.api.IAuditService;
 import by.it.academy.hw1_messenger.messenger.view.api.IAuthService;
 import by.it.academy.hw1_messenger.messenger.view.api.IUserService;
 
@@ -9,9 +10,11 @@ import java.util.Objects;
 public class AuthService implements IAuthService {
     private static volatile AuthService instance;
     private final IUserService userService;
+    private final IAuditService auditService;
 
     private AuthService() {
         this.userService = UserService.getInstance();
+        this.auditService = AuditService.getInstance();
     }
 
     public static AuthService getInstance() {
@@ -36,6 +39,7 @@ public class AuthService implements IAuthService {
         if (!Objects.equals(user.getPassword(), password)) {
             return null;
         }
+        auditService.loginAudit(user);
         return user;
     }
 }

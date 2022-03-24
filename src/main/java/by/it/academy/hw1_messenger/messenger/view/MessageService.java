@@ -2,7 +2,7 @@ package by.it.academy.hw1_messenger.messenger.view;
 
 import by.it.academy.hw1_messenger.messenger.model.Message;
 import by.it.academy.hw1_messenger.messenger.model.User;
-import by.it.academy.hw1_messenger.messenger.storage.DBChatStorage;
+import by.it.academy.hw1_messenger.messenger.storage.api.ChoiceFactoryStorage;
 import by.it.academy.hw1_messenger.messenger.storage.api.IChatStorage;
 import by.it.academy.hw1_messenger.messenger.view.api.IMessageService;
 
@@ -13,7 +13,7 @@ public class MessageService implements IMessageService {
     private final IChatStorage chatStorage;
 
     private MessageService() {
-        this.chatStorage = DBChatStorage.getInstance();
+        this.chatStorage = ChoiceFactoryStorage.getInstance().getIChatStorage();
     }
 
     public static MessageService getInstance() {
@@ -35,8 +35,8 @@ public class MessageService implements IMessageService {
     }
 
     @Override
-    public void addMessage(String loginRecipient, Message message) {
-        this.chatStorage.addMessage(loginRecipient, message);
+    public void addMessage(String toLogin, Message message) {
+        this.chatStorage.addMessage(toLogin, message);
     }
 
     @Override

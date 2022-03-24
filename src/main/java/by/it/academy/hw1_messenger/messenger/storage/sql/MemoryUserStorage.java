@@ -1,4 +1,4 @@
-package by.it.academy.hw1_messenger.messenger.storage;
+package by.it.academy.hw1_messenger.messenger.storage.sql;
 
 import by.it.academy.hw1_messenger.messenger.model.User;
 import by.it.academy.hw1_messenger.messenger.storage.api.IUserStorage;

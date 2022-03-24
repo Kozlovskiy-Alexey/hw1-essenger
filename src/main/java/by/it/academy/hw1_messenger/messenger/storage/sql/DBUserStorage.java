@@ -1,6 +1,7 @@
-package by.it.academy.hw1_messenger.messenger.storage;
+package by.it.academy.hw1_messenger.messenger.storage.sql;
 
 import by.it.academy.hw1_messenger.messenger.model.User;
+import by.it.academy.hw1_messenger.messenger.storage.sql.api.SQLInitializer;
 import by.it.academy.hw1_messenger.messenger.storage.api.IUserStorage;
 
 import java.sql.*;
@@ -12,7 +13,7 @@ import java.util.Collection;
 
 public class DBUserStorage implements IUserStorage {
     private static volatile DBUserStorage instance;
-    private final DBInitializer initializer = DBInitializer.getInstance();
+    private final SQLInitializer initializer = SQLInitializer.getInstance();
 
     private DBUserStorage() {
 
@@ -42,7 +43,7 @@ public class DBUserStorage implements IUserStorage {
                 "    birthday,\n" +
                 "    registration\n" +
                 "FROM\n" +
-                "    messenger.\"user\"\n" +
+                "    messenger.user\n" +
                 "WHERE\n" +
                 "    login = ?;";
         try (Connection connection = initializer.getDataSource().getConnection();
@@ -76,7 +77,7 @@ public class DBUserStorage implements IUserStorage {
         DateTimeFormatter regFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss");
         String registration = regFormatter.format(user.getRegistration());
 
-        String sql = "INSERT INTO messenger.\"user\" (login, password, firstname, lastname, birthday, registration)\n" +
+        String sql = "INSERT INTO messenger.user (login, password, firstname, lastname, birthday, registration)\n" +
                 "    VALUES (?, ?, ?, ?, ?, ?);";
         try (Connection connection = initializer.getDataSource().getConnection();
         PreparedStatement ps = connection.prepareStatement(sql)){
@@ -104,7 +105,7 @@ public class DBUserStorage implements IUserStorage {
                 "    birthday,\n" +
                 "    registration\n" +
                 "FROM\n" +
-                "    messenger.\"user\";";
+                "    messenger.user;";
         try (Connection connection = initializer.getDataSource().getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.execute();

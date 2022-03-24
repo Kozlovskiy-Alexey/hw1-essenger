@@ -9,5 +9,7 @@ public interface IAuditUserStorage {
 
     long create(AuditUser auditUser);
 
+    long create(AuditUser auditUser1, AuditUser auditUser2);
+
     List<AuditUser> read(Pageble pageble);
 }

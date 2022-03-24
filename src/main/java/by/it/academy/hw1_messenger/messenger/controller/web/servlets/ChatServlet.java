@@ -2,8 +2,6 @@ package by.it.academy.hw1_messenger.messenger.controller.web.servlets;
 
 import by.it.academy.hw1_messenger.messenger.model.Message;
 import by.it.academy.hw1_messenger.messenger.model.User;
-import by.it.academy.hw1_messenger.messenger.storage.DBChatStorage;
-import by.it.academy.hw1_messenger.messenger.storage.api.IChatStorage;
 import by.it.academy.hw1_messenger.messenger.view.MessageService;
 import by.it.academy.hw1_messenger.messenger.view.api.IMessageService;
 
@@ -30,7 +28,6 @@ public class ChatServlet extends HttpServlet {
         resp.setContentType("text/html; charset=UTF-8");
 
         User user = (User) req.getSession().getAttribute("user");
-        String loginTo = user.getLogin();
         List<Message> messageList = messageService.get(user);
         if (messageList != null) {
             req.setAttribute("messages", messageList);

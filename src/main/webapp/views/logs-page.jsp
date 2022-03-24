@@ -3,33 +3,35 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Chats page</title>
+    <title>Logs page</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
     <div>
-        <p>Ваши сообщения:</p>
-        <p>${requestScope.messageIsEmpty != null ? requestScope.messageIsEmpty : ""}</p>
+        <p>System logs:</p>
+        <p>${requestScope.logs != null ? requestScope.logs : ""}</p>
     </div>
     <div>
-        <c:if test="${requestScope.messages != null}">
+        <c:if test="${requestScope.audit != null}">
             <table class="table">
                 <tr>
-                    <th>Дата и время отправки</th>
-                    <th>От кого</th>
-                    <th>Текст сообщения</th>
+                    <th>Text message</th>
+                    <th>Author</th>
+                    <th>Date create</th>
+                    <th>User</th>
                 </tr>
-                <c:forEach items="${requestScope.messages}" var="sms" >
+                <c:forEach items="${requestScope.audit}" var="audit" >
                     <tr>
-                        <td><c:out value="${sms.dateTime}" /></td>
-                        <td><c:out value="${sms.fromLogin}" /></td>
-                        <td><c:out value="${sms.textMessage}" /></td>
+                        <td><c:out value="${audit.text}" /></td>
+                        <td><c:out value="${audit.author.login}" /></td>
+                        <td><c:out value="${audit.dtCreate}" /></td>
+                        <td><c:out value="${audit.user.login}" /></td>
                     </tr>
                 </c:forEach>
             </table>
         </c:if>
     </div>
-    <form action="<%=request.getContextPath()%>/messenger/message">
+    <form action="<%=request.getContextPath()%>/messenger">
         <div>
             <p>
                 <button tabindex="1" type="submit">Назад</button>

@@ -37,8 +37,8 @@ public class MessageServlet extends HttpServlet {
 
         String loginTo = req.getParameter("login");
         String messageText = req.getParameter("message");
-        Message message = new Message(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), loginTo, messageText);
         User user = (User) req.getSession().getAttribute("user");
+        Message message = new Message(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), user.getLogin(), messageText);
 
         if (loginTo.isEmpty()) {
             req.setAttribute("sendConfirmation", "Введите логин");

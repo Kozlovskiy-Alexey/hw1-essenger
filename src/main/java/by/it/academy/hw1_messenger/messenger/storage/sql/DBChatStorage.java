@@ -1,7 +1,8 @@
-package by.it.academy.hw1_messenger.messenger.storage;
+package by.it.academy.hw1_messenger.messenger.storage.sql;
 
 import by.it.academy.hw1_messenger.messenger.model.Message;
 import by.it.academy.hw1_messenger.messenger.model.User;
+import by.it.academy.hw1_messenger.messenger.storage.sql.api.SQLInitializer;
 import by.it.academy.hw1_messenger.messenger.storage.api.IChatStorage;
 import by.it.academy.hw1_messenger.messenger.storage.api.IUserStorage;
 
@@ -15,10 +16,10 @@ public class DBChatStorage implements IChatStorage {
 
     private static volatile DBChatStorage instance;
     private final IUserStorage userStorage;
-    private final DBInitializer initializer;
+    private final SQLInitializer initializer;
 
     private DBChatStorage() {
-         this.initializer = DBInitializer.getInstance();
+         this.initializer = SQLInitializer.getInstance();
          this.userStorage = DBUserStorage.getInstance();
     }
 
@@ -36,7 +37,7 @@ public class DBChatStorage implements IChatStorage {
     }
 
     @Override
-    public List<Message> get(String login) {
+    public List<Message> get(String toLogin) {
         List<Message> messages = new ArrayList<>();
         String sql = "SELECT\n" +
                 "    fromlogin,\n" +
@@ -47,7 +48,7 @@ public class DBChatStorage implements IChatStorage {
                 "WHERE toLogin = ?;";
         try (Connection connection = initializer.getDataSource().getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, login);
+            ps.setString(1, toLogin);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 String fromLogin = rs.getString("fromlogin");
@@ -64,8 +65,8 @@ public class DBChatStorage implements IChatStorage {
     }
 
     @Override
-    public void addMessage(String login, Message message) {
-        User user = userStorage.get(login);
+    public void addMessage(String toLogin, Message message) {
+        User user = userStorage.get(toLogin);
         if (user == null) {
             throw new IllegalArgumentException("Пользователь с таким логином не найден!");
         }
@@ -76,10 +77,10 @@ public class DBChatStorage implements IChatStorage {
                 "    VALUES (?, ?, ?, ?);";
         try (Connection connection = initializer.getDataSource().getConnection();
         PreparedStatement ps = connection.prepareStatement(sql)) {
-        ps.setString(1, login);
+        ps.setString(1, toLogin);
         ps.setString(2, message.getFromLogin());
         ps.setTimestamp(3, Timestamp.valueOf(date));
-        ps.setString(4, message.getText());
+        ps.setString(4, message.getTextMessage());
         ps.execute();
         } catch (SQLException e) {
             throw new IllegalArgumentException("Ошибка выполенния SQL", e);

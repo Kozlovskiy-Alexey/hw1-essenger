@@ -1,7 +1,7 @@
 package by.it.academy.hw1_messenger.messenger.controller.mains;
 
 import by.it.academy.hw1_messenger.messenger.model.User;
-import by.it.academy.hw1_messenger.messenger.storage.DBUserStorage;
+import by.it.academy.hw1_messenger.messenger.storage.sql.DBUserStorage;
 import by.it.academy.hw1_messenger.messenger.storage.api.IUserStorage;
 
 import java.time.LocalDate;
@@ -17,6 +17,7 @@ public class MessengerMain1 {
 
         IUserStorage userStorage = DBUserStorage.getInstance();
 
+        userStorage.add(user1);
         Collection<User> all = userStorage.getAll();
         all.forEach(System.out::println);
 
